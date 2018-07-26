@@ -20,4 +20,16 @@ class APITest extends TestCase
             'success' => ['token', 'name']
         ]);
     }
+
+    public function testUserLogin()
+    {
+        $response = $this->json('POST', '/api/login', [
+            'email' => 'demo@demo.com',
+            'password' => 'secret'
+        ]);
+
+        $response->assertStatus(200)->assertJsonStructure([
+            'success' => ['token']
+        ]);
+    }
 }
