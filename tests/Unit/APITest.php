@@ -51,4 +51,33 @@ class APITest extends TestCase
                 ]
             );
     }
+
+    //$this->withoutMiddleware() is used to by-pass the authentication requirement. Not recommended.
+    public function testCategoryCreation()
+    {
+        $this->withoutMiddleware();
+
+        $response = $this->json('POST', '/api/category', [
+            'name' => str_random(10),
+        ]);
+
+        $response->assertStatus(200)->assertJson([
+            'status' => true,
+            'message' => 'Category Created'
+        ]);
+    }
+
+    public function testCategoryDeletion()
+    {
+        $user = \App\User::find(1);
+
+        $category = \App\Category::create(['name' => 'To be deleted']);
+
+        $response = $this->actingAs($user, 'api')
+            ->json('DELETE', "/api/category/{$category->id}")
+            ->assertStatus(200)->assertJson([
+                'status' => true,
+                'message' => 'Category Deleted'
+            ]);
+    }
 }
