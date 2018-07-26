@@ -32,4 +32,23 @@ class APITest extends TestCase
             'success' => ['token']
         ]);
     }
+
+    public function testCategoryFetch()
+    {
+        $user = \App\User::find(1);
+
+        //The above structure assertion is indicated by the * that the key can be any string.
+        $response = $this->actingAs($user, 'api')
+            ->json('GET', '/api/category')
+            ->assertStatus(200)->assertJsonStructure([
+                    '*' => [
+                        'id',
+                        'name',
+                        'created_at',
+                        'updated_at',
+                        'deleted_at'
+                    ]
+                ]
+            );
+    }
 }
