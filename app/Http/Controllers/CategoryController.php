@@ -18,16 +18,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -35,7 +25,12 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        return response()->json(['status' => true, 'message' => 'Category Created']);
+        $category = Category::create($request->only('name'));
+
+        return response()->json([
+            'status' => (bool) $category,
+            'message'=> $category ? 'Category Created' : 'Error Creating Category!!'
+        ]);
     }
 
     /**
@@ -46,18 +41,18 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        return response()->json($category);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display all tasks for the specified category resource.
      *
      * @param  \App\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category $category)
+    public function tasks(Category $category)
     {
-        //
+        return response()->json($category->tasks()->orderBy('order')->get());
     }
 
     /**
@@ -69,7 +64,12 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $status = $category->update($request->only('name'));
+
+        return response()->json([
+            'status' => $status,
+            'message' => $status ? 'Category Updated!' : 'Error Updating Category'
+        ]);
     }
 
     /**
@@ -80,6 +80,11 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        return response()->json(['status' => true, 'message' => 'Category Deleted']);
+        $status  = $category->delete();
+
+        return response()->json([
+            'status' => $status,
+            'message' => $status ? 'Category Deleted!!' : 'Error Deleting Category!!'
+        ]);
     }
 }
